@@ -202,6 +202,7 @@ class Task(BaseModel):
     _original_expected_output: str | None = PrivateAttr(default=None)
     _original_output_file: str | None = PrivateAttr(default=None)
     _thread: threading.Thread | None = PrivateAttr(default=None)
+    _is_delegated: bool = PrivateAttr(default=False)
     model_config = {"arbitrary_types_allowed": True}
 
     @field_validator("guardrail")
@@ -539,6 +540,7 @@ class Task(BaseModel):
                 json_dict=json_output,
                 agent=agent.role,
                 output_format=self._get_output_format(),
+                messages=agent.last_messages,
             )
 
             if self._guardrails:
@@ -949,6 +951,7 @@ Follow these guidelines:
                 json_dict=json_output,
                 agent=agent.role,
                 output_format=self._get_output_format(),
+                messages=agent.last_messages,
             )
 
         return task_output
